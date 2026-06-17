@@ -13,7 +13,6 @@ import com.marketplace.village.dto.VerifyOtpRequest;
 import com.marketplace.village.service.ForgotPasswordService;
 import org.springframework.web.bind.annotation.RequestBody;
 
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -26,35 +25,52 @@ public class ForgotPasswordController {
 
     @PostMapping("/send-otp")
     public ResponseEntity<?> sendOtp(
-            @RequestBody SendOtpRequest request) {
+            @RequestBody SendOtpRequest request) throws Exception {
 
-        service.sendOtp(request.getEmail());
+        try {
+            service.sendOtp(request.getEmail());
+            return ResponseEntity.ok(
+                    "OTP sent successfully");
+        } catch (Exception e) {
+            throw e;
+        }
 
-        return ResponseEntity.ok(
-                "OTP sent successfully");
     }
 
     @PostMapping("/verify-otp")
     public ResponseEntity<?> verifyOtp(
-            @RequestBody VerifyOtpRequest request) {
+            @RequestBody VerifyOtpRequest request) throws Exception {
 
-        service.verifyOtp(
-                request.getEmail(),
-                request.getOtp());
+        try {
+            boolean isValid = service.verifyOtp(
+                    request.getEmail(),
+                    request.getOtp());
+            if (isValid) {
+                return ResponseEntity.ok(
+                        "OTP verified successfully");
+            } else {
+                return ResponseEntity.status(400).body(
+                        "Invalid OTP");
+            }
+        } catch (Exception e) {
+            throw e;
+        }
 
-        return ResponseEntity.ok(
-                "OTP verified successfully");
     }
 
     @PostMapping("/reset-password")
     public ResponseEntity<?> resetPassword(
-            @RequestBody ResetPasswordRequest request) {
+            @RequestBody ResetPasswordRequest request) throws Exception {
 
-        service.resetPassword(
-                request.getEmail(),
-                request.getNewPassword());
+        try {
+            service.resetPassword(
+                    request.getEmail(),
+                    request.getNewPassword());
+            return ResponseEntity.ok(
+                    "Password reset successfully");
+        } catch (Exception e) {
+            throw e;
+        }
 
-        return ResponseEntity.ok(
-                "Password reset successful");
     }
 }

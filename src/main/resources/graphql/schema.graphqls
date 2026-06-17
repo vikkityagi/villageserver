@@ -1,0 +1,11 @@
+type ShopUser {
+    id: ID
+    name: String
+    shopAddress: String
+    contact: String
+    email: String
+}
+
+type Query {
+    shopUser(id: ID!): ShopUser
+}

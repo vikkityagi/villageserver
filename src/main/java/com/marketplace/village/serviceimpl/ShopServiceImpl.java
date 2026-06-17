@@ -182,10 +182,10 @@ public class ShopServiceImpl implements ShopService {
             throw new CustomException("User not found");
         }
 
-        if (shopUserDto.getEmail() != null) {
+        if (!shopUserDto.getEmail().equalsIgnoreCase(dbShopUser.get().getEmail())) {
             ShopUser shopUserByEmail = shopUserRepository.findByEmail(shopUserDto.getEmail());
-            if (shopUserByEmail != null) {
-                throw new CustomException("ShopUser already Register with this email");
+            if (!shopUserByEmail.getEmail().equalsIgnoreCase(dbShopUser.get().getEmail())) {
+
             }
         }
 
@@ -193,6 +193,7 @@ public class ShopServiceImpl implements ShopService {
         shopUser.setName(shopUserDto.getName());
         shopUser.setShopAddress(shopUserDto.getShopAddress());
         shopUser.setContact(shopUserDto.getContact());
+        shopUser.setEmail(shopUserDto.getEmail());
         shopUser.setPassword(shopUserDto.getPassword());
         shopUser.setConfirmPassword(shopUserDto.getConfirmPassword());
         shopUser.setAltContact(shopUserDto.getAltContact());
@@ -312,6 +313,24 @@ public class ShopServiceImpl implements ShopService {
         shopUserDto.setPinCode(shopUser.getPinCode());
         shopUserDto.setDeliveryAvailable(shopUser.getDeliveryAvailable());
         shopUserDto.setProfileImageUrl(getShopUserImage(shopUser.getId()));
+        // shopUserDto.setCategory(shopUser.getCategory());
+        if (shopUser.getCategory().size() != 0) {
+            for (Category category : shopUser.getCategory()) {
+                if (category.getShops().size() != 0) {
+                    List<ShopDto> shops = category.getShops()
+                            .stream()
+                            .map(shop -> {
+                                ShopDto dto = new ShopDto();
+                                dto.setId(shop.getId());
+                                dto.setShopName(shop.getShopName());
+                                return dto;
+                            })
+                            .toList();
+
+                    shopUserDto.setShops(shops);
+                }
+            }
+        }
         return shopUserDto;
     }
 

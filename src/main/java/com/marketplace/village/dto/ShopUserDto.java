@@ -3,7 +3,11 @@ package com.marketplace.village.dto;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
+
+import com.marketplace.village.entity.Category;
+import com.marketplace.village.entity.Shop;
 
 import lombok.Data;
 
@@ -37,6 +41,12 @@ public class ShopUserDto {
     private LocalDateTime lastTimeActivity;
 
     private String email;
+
+    private List<Category> category;
+
+    private List<ShopDto> shops;
+
+    
 
     
 }
