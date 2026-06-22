@@ -20,4 +20,8 @@ public interface CustomerOrderRepository extends JpaRepository<CustomerOrder,UUI
 
     @Query("Select c from CustomerOrder c where c.delete = false and c.shopId=:id")
     List<CustomerOrder> findOrderByShopId(UUID id);
+
+    @Query("Select c from CustomerOrder c where c.phoneNumber=:phoneNumber")
+    List<CustomerOrder> findAllOrderByPhoneNumber(String phoneNumber);
+    
 }

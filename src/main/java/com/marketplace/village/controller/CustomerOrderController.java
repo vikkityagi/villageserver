@@ -68,4 +68,11 @@ public class CustomerOrderController {
         List<CustomerOrderDto> dto = service.getOrderByShopId(id);
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<CustomerOrderDto> delete(
+            @PathVariable UUID id) {
+        CustomerOrderDto dto = service.deleteOrder(id);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
+    }
 }

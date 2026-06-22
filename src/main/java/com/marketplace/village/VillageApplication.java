@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class VillageApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(VillageApplication.class, args);
+		SpringApplication.run(VillageApplication.class, args);	
 	}
 
 }

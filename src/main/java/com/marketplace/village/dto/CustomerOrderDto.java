@@ -41,9 +41,19 @@ public class CustomerOrderDto {
 
     private UUID productId;
 
+    private String productName;
+
+    private Double totalproductPrice;
+
+    private Double unitProductPrice;
+
+    private String productUnit;
+
     private LocalDateTime orderDate;
 
     private LocalDateTime updatedAt;
+
+    private Boolean isDeliver;
 
     private Boolean isActive;
 }

@@ -14,6 +14,8 @@ public interface CustomerOrderService {
 
     CustomerOrder getOrderById(UUID id);
 
+    CustomerOrderDto deleteOrder(UUID id);
+
     List<CustomerOrderDto> getOrderByShopId(UUID id);
 
     List<CustomerOrderDto> getAllActiveOrders(String phoneNumber);

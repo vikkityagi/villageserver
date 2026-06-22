@@ -86,25 +86,36 @@ public class CustomerOrderServiceImpl
     @Override
     public List<CustomerOrderDto> getAllActiveOrders(String phoneNumber) {
         // TODO Auto-generated method stub
-        List<CustomerOrder> customerOrderList = repository.findAllActiveOrderByPhoneNumber(phoneNumber);
+        // List<CustomerOrder> customerOrderList =
+        // repository.findAllActiveOrderByPhoneNumber(phoneNumber);
+        List<CustomerOrder> customerOrderList = repository.findAllOrderByPhoneNumber(phoneNumber);
 
         List<CustomerOrderDto> dtoList = customerOrderList.stream()
-        .map(order -> {
-            CustomerOrderDto dto = new CustomerOrderDto();
-            dto.setId(order.getId());
-            dto.setCustomerName(order.getCustomerName());
-            dto.setPhoneNumber(order.getPhoneNumber());
-            dto.setQuantity(order.getQuantity());
-            dto.setAddress(order.getAddress());
-            dto.setDeliveryOption(order.getDeliveryOption());
-            dto.setLandmark(order.getLandmark());
-            dto.setPinCode(order.getPinCode());
-            dto.setOrderDate(order.getOrderDate());
-            dto.setUpdatedAt(order.getUpdatedAt());
-            dto.setIsActive(order.getIsActive());
-            return dto;
-        })
-        .toList();
+                .map(order -> {
+                    CustomerOrderDto dto = new CustomerOrderDto();
+                    dto.setId(order.getId());
+                    dto.setCustomerName(order.getCustomerName());
+                    dto.setPhoneNumber(order.getPhoneNumber());
+                    dto.setQuantity(order.getQuantity());
+                    dto.setAddress(order.getAddress());
+                    dto.setDeliveryOption(order.getDeliveryOption());
+                    dto.setLandmark(order.getLandmark());
+                    dto.setPinCode(order.getPinCode());
+                    dto.setOrderDate(order.getOrderDate());
+                    dto.setUpdatedAt(order.getUpdatedAt());
+                    dto.setIsActive(order.getIsActive());
+                    Optional<ShopProduct> shopProductOpt = shopProductRepo.findById(order.getProductId());
+                    if (!shopProductOpt.isPresent()) {
+                        throw new CustomException("Product is not found");
+                    }
+                    dto.setProductName(shopProductOpt.get().getProductName());
+                    dto.setUnitProductPrice(shopProductOpt.get().getProductPrice());
+                    dto.setTotalproductPrice(shopProductOpt.get().getProductPrice() * order.getQuantity());
+                    dto.setProductUnit(shopProductOpt.get().getProductUnit());
+                    dto.setIsDeliver(order.getIsDeliver());
+                    return dto;
+                })
+                .toList();
 
         return dtoList;
     }
@@ -114,11 +125,16 @@ public class CustomerOrderServiceImpl
         // TODO Auto-generated method stub
         Optional<CustomerOrder> orderOpt = repository.findById(id);
 
-        if(!orderOpt.isPresent()){
+        if (!orderOpt.isPresent()) {
             throw new CustomException("Order is not found");
         }
 
         CustomerOrder customerOrder = orderOpt.get();
+
+        if (!customerOrder.getIsDeliver())
+            customerOrder.setIsDeliver(true);
+        else
+            throw new CustomException("This Order has been delivered by you at " + customerOrder.getUpdatedAt());
 
         customerOrder.setIsActive(status);
         customerOrder.setUpdatedAt(LocalDateTime.now());
@@ -138,30 +154,66 @@ public class CustomerOrderServiceImpl
         // TODO Auto-generated method stub
         Optional<Shop> shopOpt = shopRepo.findById(id);
 
-        if(!shopOpt.isPresent()){
+        if (!shopOpt.isPresent()) {
             throw new CustomException("shop not found");
         }
 
         List<CustomerOrder> customerOrderList = repository.findOrderByShopId(id);
 
         List<CustomerOrderDto> dtoList = customerOrderList.stream()
-        .map(order -> {
-            CustomerOrderDto dto = new CustomerOrderDto();
-            dto.setId(order.getId());
-            dto.setCustomerName(order.getCustomerName());
-            dto.setPhoneNumber(order.getPhoneNumber());
-            dto.setQuantity(order.getQuantity());
-            dto.setAddress(order.getAddress());
-            dto.setDeliveryOption(order.getDeliveryOption());
-            dto.setLandmark(order.getLandmark());
-            dto.setPinCode(order.getPinCode());
-            dto.setOrderDate(order.getOrderDate());
-            dto.setUpdatedAt(order.getUpdatedAt());
-            dto.setIsActive(order.getIsActive());
-            return dto;
-        })
-        .toList();
+                .map(order -> {
+                    CustomerOrderDto dto = new CustomerOrderDto();
+                    dto.setId(order.getId());
+                    dto.setCustomerName(order.getCustomerName());
+                    dto.setPhoneNumber(order.getPhoneNumber());
+                    dto.setQuantity(order.getQuantity());
+                    dto.setAddress(order.getAddress());
+                    dto.setDeliveryOption(order.getDeliveryOption());
+                    dto.setLandmark(order.getLandmark());
+                    dto.setPinCode(order.getPinCode());
+                    dto.setOrderDate(order.getOrderDate());
+                    dto.setUpdatedAt(order.getUpdatedAt());
+                    dto.setIsActive(order.getIsActive());
+                    dto.setIsDeliver(order.getIsDeliver());
+                    Optional<ShopProduct> shopProductOpt = shopProductRepo.findById(order.getProductId());
+                    if (!shopProductOpt.isPresent()) {
+                        throw new CustomException("Product is not found");
+                    }
+                    dto.setProductName(shopProductOpt.get().getProductName());
+                    dto.setUnitProductPrice(shopProductOpt.get().getProductPrice());
+                    dto.setTotalproductPrice(shopProductOpt.get().getProductPrice() * order.getQuantity());
+                    dto.setProductUnit(shopProductOpt.get().getProductUnit());
+                    return dto;
+                })
+                .toList();
 
         return dtoList;
+    }
+
+    @Override
+    public CustomerOrderDto deleteOrder(UUID id) {
+
+        Optional<CustomerOrder> customerOrderOptional = this.repository.findById(id);
+
+        if (!customerOrderOptional.isPresent()) {
+            throw new CustomException("Order Not found");
+        }
+
+        CustomerOrder order = customerOrderOptional.get();
+
+        LocalDateTime orderTime = order.getOrderDate();
+
+        if (orderTime.plusMinutes(5).isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Order cannot be deleted after 5 minutes");
+        }
+
+        this.repository.deleteById(id);
+
+        CustomerOrderDto customerOrderDto = new CustomerOrderDto();
+
+        customerOrderDto.setId(id);
+
+        return customerOrderDto;
+
     }
 }

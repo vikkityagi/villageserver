@@ -34,11 +34,13 @@ public class CustomerOrder extends BaseClass {
 
     private LocalDateTime orderDate;
 
-    private Boolean isActive = true;
+    private Boolean isActive = false;
 
     private int quantity;
 
     private UUID shopId;
 
     private UUID productId;
+
+    private Boolean isDeliver = false;
 }

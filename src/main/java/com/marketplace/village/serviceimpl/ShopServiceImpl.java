@@ -334,6 +334,8 @@ public class ShopServiceImpl implements ShopService {
         return shopUserDto;
     }
 
+    
+
     private ShopUser convertShopUserDtoToShopUser(ShopUserDto shopUserDto) {
         ShopUser shopUser = new ShopUser();
         shopUser.setName(shopUserDto.getName());
