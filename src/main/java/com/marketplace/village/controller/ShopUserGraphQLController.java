@@ -12,7 +12,7 @@ import com.marketplace.village.entity.ShopUser;
 import com.marketplace.village.repository.ShopUserRepository;
 
 @Controller
-@CrossOrigin("*")
+@CrossOrigin(origins = "*")
 public class ShopUserGraphQLController {
 
     @Autowired
