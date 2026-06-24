@@ -88,7 +88,7 @@ public class ProductServiceImpl implements ProductService {
             shopProductDto.setIsActive(shopProduct.getIsActive());
             shopProductDto.setProductPinCode(shopProduct.getProductPinCode());
             shopProductDto.setProductUnit(shopProduct.getProductUnit());
-            // shopProductDto.setProductQuantity(shopProduct.getProductQuantity());
+            shopProductDto.setProductDescription(shopProduct.getProductDescription());
             shopProductDto.setProductUnit(shopProduct.getProductUnit());
 
             shopProductDtos.add(shopProductDto);
@@ -156,6 +156,9 @@ public class ProductServiceImpl implements ProductService {
         updatedShopProductDto.setProductPrice(shopProduct.getProductPrice());
         updatedShopProductDto.setShopId(shopProduct.getShop().getId());
         updatedShopProductDto.setIsActive(shopProduct.getIsActive());
+        updatedShopProductDto.setProductQuantity(shopProduct.getProductQuantity());
+        updatedShopProductDto.setProductDescription(shopProduct.getProductDescription());
+        updatedShopProductDto.setProductUnit(shopProduct.getProductUnit());
         // updatedShopProductDto.setUpdatedAt(shopProduct.getUpdatedAt());
         // updatedShopProductDto.setCreatedAt(shopProduct.getCreatedAt());
         // updatedShopProductDto.setUpdatedAt(LocalDateTime.now());

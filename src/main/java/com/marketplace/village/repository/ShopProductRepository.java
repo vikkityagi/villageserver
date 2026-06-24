@@ -17,7 +17,6 @@ public interface ShopProductRepository extends JpaRepository<ShopProduct, UUID> 
 
     @Query(value = "SELECT * FROM shop_product sp " +
             "WHERE sp.is_delete = false " +
-            "AND sp.is_active = true " +
             "AND sp.shop_id = :shopId", nativeQuery = true)
     List<ShopProduct> findActiveProductsByShopId(@Param("shopId") UUID shopId);
 
