@@ -57,14 +57,14 @@ public class CustomerOrderServiceImpl
         }
         order.setProductId(dto.getProductId());
 
-        int shopQuantity = shopProductOpt.get().getProductQuantity();
+        int shopProductQuantity = shopProductOpt.get().getProductQuantity();
         int customerQuantity = dto.getQuantity();
 
-        if (shopQuantity < customerQuantity) {
+        if (shopProductQuantity < customerQuantity || !shopProductOpt.get().getIsActive()) {
             throw new CustomException("Out of Stock");
         }
 
-        shopProductOpt.get().setProductQuantity(shopQuantity - customerQuantity);
+        shopProductOpt.get().setProductQuantity(shopProductQuantity - customerQuantity);
 
         shopProductRepo.save(shopProductOpt.get());
 
