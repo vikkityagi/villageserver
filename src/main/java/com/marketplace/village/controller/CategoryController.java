@@ -27,7 +27,7 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
     
-    
+    //test
     @PostMapping("/categories")
     public ResponseEntity<CategoryDto> addCategory(@RequestBody CategoryDto categoryDto) {
         try{
